@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Hand Cricket Game</title>
+  <style>
+    body {
+      text-align: center;
+      font-family: Arial, sans-serif;
+      background-color: #f2f2f2;
+    }
+
+    h1 {
+      color: #333;
+    }
+
+    p {
+      margin: 10px 0;
+      font-size: 18px;
+    }
+
+    input[type="number"] {
+      width: 50px;
+      padding: 5px;
+      font-size: 16px;
+    }
+
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
+      background-color: #4caf50;
+      color: #fff;
+      border: none;
+      cursor: pointer;
+      display: inline-block;
+    }
+
+    button:hover {
+      background-color: #45a049;
+    }
+
+    #totalRunsBtn {
+      margin-top: 20px;
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <h1>Hand Cricket Game</h1>
+  <p>Select a number from 1 to 6:</p>
+  <input type="number" id="user-input" min="1" max="6" disabled>
+  <br><br>
+  <button onclick="playHandCricket()" id="playBtn">Play</button>
+  <br><br>
+  <p id="result"></p>
+  <button id="totalRunsBtn" onclick="showTotalRuns()">Show Total Runs</button>
+
+  <script>
+    var totalRuns = 0;
+    var isOut = false;
+    var timer;
+
+    function playHandCricket() {
+      if (isOut) {
+        displayTotalRuns();
+        startNewGameAfterDelay(5000);
+        return;
+      }
+
+      var userInput = parseInt(document.getElementById("user-input").value);
+      var computerInput = Math.floor(Math.random() * 6) + 1;
+      var resultElement = document.getElementById("result");
+
+      if (userInput < 1 || userInput > 6) {
+        resultElement.textContent = getErrorMessage();
+        return;
+      }
+
+      if (userInput === computerInput) {
+        isOut = true;
+      } else {
+        totalRuns += userInput;
+      }
+
+      resultElement.textContent = getResultMessage(userInput, computerInput, isOut);
+
+      if (isOut) {
+        document.getElementById("totalRunsBtn").style.display = "inline-block";
+        document.getElementById("playBtn").style.display = "none";
+        document.getElementById("user-input").disabled = true;
+      }
+    }
+
+    function getErrorMessage() {
+      return "Please select a number between 1 and 6.";
+    }
+
+    function getResultMessage(userInput, computerInput, isOut) {
+      var message = "You chose " + userInput + ". The computer chose " + computerInput + ".";
+      if (isOut) {
+        message += " You're out!";
+      } else {
+        message += " You scored " + userInput + " runs!";
+        message += " Total runs: " + totalRuns;
+      }
+      return message;
+    }
+
+    function displayTotalRuns() {
+      var resultElement = document.getElementById("result");
+      resultElement.textContent = "Total runs: " + totalRuns;
+      document.getElementById("totalRunsBtn").style.display = "inline-block";
+    }
+
+    function showTotalRuns() {
+      displayTotalRuns();
+    }
+
+    function startNewGameAfterDelay(delay) {
+      timer = setTimeout(startNewGame, delay);
+    }
+
+    function startNewGame() {
+      clearTimeout(timer);
+      resetGame();
+      document.getElementById("user-input").value = "";
+      document.getElementById("result").textContent = "";
+      document.getElementById("totalRunsBtn").style.display = "none";
+      document.getElementById("playBtn").style.display = "inline-block";
+      document.getElementById("user-input").disabled = false;
+    }
+
+    function resetGame() {
+      totalRuns = 0;
+      isOut = false;
+    }
+  </script>
+
+  <script>
+    function enableInput() {
+      document.getElementById("user-input").disabled = false;
+    }
+    setTimeout(enableInput, 0);
+  </script>
+</body>
+</html>
